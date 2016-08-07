@@ -1,7 +1,13 @@
 #!/bin/bash
 
 sudo cp -a -v /etc/apt/sources.list /etc/apt/sources.list.0
-printf "deb http://download.virtualbox.org/virtualbox/debian `lsb_release -c -s` contrib" | sudo tee -a /etc/apt/sources.list
+__vboxsrc=($(grep "deb http://download.virtualbox.org/virtualbox/debian `lsb_release -c -s` contrib" /etc/apt/sources.list))
+
+case ${#__vboxsrc[*]} in
+  0) printf "\033[32mFound, .deb source\033[0m\n";;
+  *) printf "deb http://download.virtualbox.org/virtualbox/debian `lsb_release -c -s` contrib\n" | sudo tee -a /etc/apt/sources.list;;
+esac
+
 sudo wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
 sudo wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 
